@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 const products = [
   {
@@ -38,28 +38,45 @@ const products = [
     price: 35,
     image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c",
   },
-  {
-    id: 6,
-    name: "Headphones",
-    category: "Electronics",
-    price: 120,
-    image: "https://images.unsplash.com/photo-1518444028785-8d3b0d7d6b5f",
-  },
+  // {
+  //   id: 6,
+  //   name: "Headphones",
+  //   category: "Electronics",
+  //   price: 120,
+  // image: "https://images.unsplash.com/photo-PDX_a_82obo"
+  // },
 ];
 
 const categories = ["All", "Electronics", "Sports", "Kitchen"];
 
 const ProductList = () => {
+
+  const [filteredProducts, setFilteredProducts] = useState(products);
+ 
+  const [searchInput,setSearchInput] = useState("");
+//  console.log(searchInput);
+
+
+ const handleSearch = () =>{
+  const expectProduct = products.filter(product => product.name.toLowerCase().includes(searchInput.toLowerCase()));
+  console.log(expectProduct);
+
+  setFilteredProducts(expectProduct);
+ }
+
+
   return (
     <div className="p-6 max-w-6xl mx-auto">
       {/*  Search UI */}
       <div className="flex items-center gap-3 mb-5">
         <input
           type="text"
+          value={searchInput}
+          onChange={e => setSearchInput(e.target.value)}
           placeholder="Search products..."
           className="flex-1 border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <button className="bg-blue-600 text-white px-5 py-3 rounded-xl text-sm hover:bg-blue-700 transition">
+        <button onClick={handleSearch} className="bg-blue-600 text-white px-5 py-3 rounded-xl text-sm hover:bg-blue-700 transition">
           Search
         </button>
       </div>
@@ -78,7 +95,7 @@ const ProductList = () => {
 
       {/*  Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((p) => (
+        {filteredProducts.map((p) => (
           <div
             key={p.id}
             className="group border rounded-2xl overflow-hidden bg-white hover:shadow-lg transition"
