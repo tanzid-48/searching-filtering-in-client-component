@@ -37,105 +37,127 @@ const products = [
     category: "Electronics",
     price: 35,
     image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c",
+
   },
-  // {
-  //   id: 6,
-  //   name: "Headphones",
-  //   category: "Electronics",
-  //   price: 120,
-  // image: "https://images.unsplash.com/photo-PDX_a_82obo"
-  // },
+
 ];
 
 const categories = ["All", "Electronics", "Sports", "Kitchen"];
 
 const ProductList = () => {
 
+  const [searchInput, setSearchInput] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [filteredProducts, setFilteredProducts] = useState(products);
- 
-  const [searchInput,setSearchInput] = useState("");
-//  console.log(searchInput);
 
+  // 🔍 Search + Filter together
+  const handleSearch = () => {
+    let result = products;
 
- const handleSearch = () =>{
-  const expectProduct = products.filter(product => product.name.toLowerCase().includes(searchInput.toLowerCase()));
-  console.log(expectProduct);
+    // search filter
+    if (searchInput) {
+      result = result.filter(product =>
+        product.name.toLowerCase().includes(searchInput.toLowerCase())
+      );
+    }
 
-  setFilteredProducts(expectProduct);
- }
+    // category filter
+    if (selectedCategory !== "All") {
+      result = result.filter(product =>
+        product.category === selectedCategory
+      );
+    }
 
+    setFilteredProducts(result);
+  };
+
+  // 🎯 Category filter
+  const handleCategory = (cat) => {
+    setSelectedCategory(cat);
+
+    let result = products;
+
+    if (cat !== "All") {
+      result = result.filter(product => product.category === cat);
+    }
+
+    if (searchInput) {
+      result = result.filter(product =>
+        product.name.toLowerCase().includes(searchInput.toLowerCase())
+      );
+    }
+
+    setFilteredProducts(result);
+  };
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      {/*  Search UI */}
+
+      {/* Search */}
       <div className="flex items-center gap-3 mb-5">
         <input
           type="text"
           value={searchInput}
-          onChange={e => setSearchInput(e.target.value)}
+          onChange={(e) => setSearchInput(e.target.value)}
           placeholder="Search products..."
-          className="flex-1 border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 border rounded-xl px-4 py-3 text-sm"
         />
-        <button onClick={handleSearch} className="bg-blue-600 text-white px-5 py-3 rounded-xl text-sm hover:bg-blue-700 transition">
+        <button
+          onClick={handleSearch}
+          className="bg-blue-600 text-white px-5 py-3 rounded-xl text-sm"
+        >
           Search
         </button>
       </div>
 
-      {/*  Filter Buttons */}
+      {/* Category Buttons */}
       <div className="flex gap-3 flex-wrap mb-8">
         {categories.map((cat) => (
           <button
             key={cat}
-            className="px-4 py-1.5 rounded-full text-sm border bg-white text-gray-600 border-gray-300 hover:bg-blue-600 hover:text-white transition"
+            onClick={() => handleCategory(cat)}
+            className={`px-4 py-1.5 rounded-full text-sm border ${
+              selectedCategory === cat
+                ? "bg-blue-600 text-white"
+                : "bg-white text-gray-600"
+            }`}
           >
             {cat}
           </button>
         ))}
       </div>
 
-      {/*  Cards */}
+      {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredProducts.map((p) => (
-          <div
-            key={p.id}
-            className="group border rounded-2xl overflow-hidden bg-white hover:shadow-lg transition"
-          >
-            {/*  Image */}
-            <div className="h-40 overflow-hidden">
+          <div key={p.id} className="border rounded-2xl overflow-hidden">
+
+            <div className="h-40">
               <Image
                 src={p.image}
                 alt={p.name}
                 width={500}
                 height={200}
-                className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
+                className="w-full h-full object-cover"
               />
             </div>
 
-            {/* Content */}
+
+
             <div className="p-4">
               <p className="text-xs text-gray-400">{p.category}</p>
 
-              <h2 className="font-semibold text-gray-800 text-lg group-hover:text-blue-600 transition">
+              <h2 className="font-semibold text-gray-800 text-lg">
                 {p.name}
               </h2>
 
-              <p className="text-blue-600 font-bold mt-2 text-lg">${p.price}</p>
-
-              {/* Buttons */}
-              <div className="flex gap-2 mt-4">
-                <button className="w-full bg-blue-600 text-white py-2 rounded-lg text-sm hover:bg-blue-700 transition">
-                  Add
-                </button>
-                <button className="w-full border border-gray-300 py-2 rounded-lg text-sm hover:bg-gray-100 transition">
-                  Details
-                </button>
-              </div>
+              <p className="text-blue-600 font-bold mt-2 text-lg">
+                ${p.price}
+              </p>
             </div>
           </div>
         ))}
       </div>
     </div>
   );
-};
-
-export default ProductList;
+};export default ProductList;
